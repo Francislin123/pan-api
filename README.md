@@ -28,6 +28,33 @@ Esta aplicação é responsável pela busca de endereço pelo cep e atualizaçao
 ### Documentação da API (Swagger)
 - Link para acesso local: http://localhost:8077/pan-api/v1/swagger-ui.html#/
 
+### Insert dos dados no H2:
+insert
+	into
+		ADDRESS (ID ,
+		NEIGHBORHOOD ,
+		CEP ,
+		LOCALITY ,
+		PUBLIC_PLACE ,
+		UF)
+	values (1,
+	'Vila Gomes Cardim',
+	'03317000',
+	'São Paulo',
+	'Rua Serra De Botucatu',
+	'Teste');
+
+insert
+	into
+		CLIENT (ID ,
+		CPF ,
+		name,
+		ADDRESS_ID)
+	values (1,
+	'40208053859',
+	'Frans',
+	1);	
+
 ### Você também pode:
 
 - Solicitação de mesclagem no ramo mestre após ser aplicada na produção
