@@ -25,8 +25,9 @@ Esta aplicação é responsável pela busca de endereço pelo cep e atualizaçao
 
 - java -jar pan-0.0.1-SNAPSHOT.jar
    
-### Documentação da API (Swagger)
+### Documentação da API (Swagger) And URL For access H2
 - Link para acesso local: http://localhost:8077/pan-api/v1/swagger-ui.html#/
+- http://localhost:8077/pan-api/v1/h2/
 
 ### Insert dos dados no H2:
 insert
