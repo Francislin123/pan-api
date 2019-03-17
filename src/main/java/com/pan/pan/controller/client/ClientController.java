@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -126,7 +127,7 @@ public class ClientController {
             @ApiResponse(code = 500, message = "Unhandled error")})
     @RequestMapping(value = "{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateClientAddress(
-            @Valid @RequestBody ClientRequest clientRequest) {
+            @Valid @RequestBody ClientRequest clientRequest) throws JSONException {
 
         Client newClient = Client.builder()
                 .name(clientRequest.getName())

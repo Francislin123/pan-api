@@ -6,6 +6,7 @@ import com.pan.pan.repository.address.model.Address;
 import com.pan.pan.repository.client.ClientRepository;
 import com.pan.pan.repository.client.model.Client;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
+
+import org.json.JSONObject;
 
 @Slf4j
 @Service
@@ -121,7 +123,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client updateClientAddress(Client client, String cep) {
+    public Client updateClientAddress(Client client, String cep) throws JSONException {
 
         Client findClient = findClientByCpf(client.getCpf());
 
@@ -138,20 +140,22 @@ public class ClientServiceImpl implements ClientService {
         return saveClient;
     }
 
-    private Address findAddress(String cep, Client client) {
+    private Address findAddress(String cep, Client client) throws JSONException {
 
         String addreesJson = searchCep(cep);
+
+        JSONObject myResponse = new JSONObject(addreesJson);
 
         Address address = addressRepository.findByCep(client.getAddress().getCep()).orElseThrow(() ->
                 new UserException(String.format("Address is not found for cep='%s' ", cep)));
 
         Address updateAddress = Address.builder()
                 .id(address.getId())
-                .cep(addreesJson.substring(9,18))
-                .logradouro(addreesJson.substring(35,56))
-                .bairro(addreesJson.substring(100,117))
-                .localidade(addreesJson.substring(134,143))
-                .uf(addreesJson.substring(152,154))
+                .cep(myResponse.getString("cep"))
+                .logradouro(myResponse.getString("logradouro"))
+                .bairro(myResponse.getString("bairro"))
+                .localidade(myResponse.getString("localidade"))
+                .uf(myResponse.getString("uf"))
                 .build();
 
         Address addressNow = addressRepository.save(updateAddress);
