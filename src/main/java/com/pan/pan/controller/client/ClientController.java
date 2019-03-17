@@ -91,7 +91,6 @@ public class ClientController {
             @ApiResponse(code = 200, message = "Cep search ok", response = CollectionResponse.class),
             @ApiResponse(code = 404, message = "Empty result")})
     @RequestMapping(value = "searchByStates", method = RequestMethod.GET)
-    //TODO Implementar metodo de busca de estado
     public ResponseEntity searchStates() {
 
         String states = clientService.searchStates();

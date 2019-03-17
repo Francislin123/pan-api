@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.experimental.Tolerate;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @Entity
