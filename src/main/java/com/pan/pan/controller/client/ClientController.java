@@ -134,8 +134,8 @@ public class ClientController {
                 .cpf(clientRequest.getCpf())
                 .build();
 
-        clientService.updateClientAddress(newClient, clientRequest.getCep());
+        Client updateClientAddress = clientService.updateClientAddress(newClient, clientRequest.getCep());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(updateClientAddress);
     }
 }

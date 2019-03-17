@@ -58,7 +58,7 @@ public class ClientServiceImpl implements ClientService {
             json = jsonSb.toString();
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new UserException("Cep not found", e);
         }
 
         log.info("Success" + json);
