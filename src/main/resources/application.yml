@@ -16,7 +16,7 @@ management:
 
 spring:
   application:
-    name: Hub-api
+    name: Pan-api
     h2:
       console:
         path: /h2
@@ -39,7 +39,7 @@ spring:
 
   datasource:
     driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:hub
+    url: jdbc:h2:mem:pan
     username: sa
     password:
 
