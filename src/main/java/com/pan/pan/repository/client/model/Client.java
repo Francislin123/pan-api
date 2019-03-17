@@ -4,8 +4,6 @@ import com.pan.pan.repository.address.model.Address;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -25,9 +23,8 @@ public class Client {
     @Column(name = "cpf")
     private String cpf;
 
-    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
-    @Fetch(value = FetchMode.SUBSELECT)
-    private List<Address> address;
+    @ManyToOne
+    private Address address;
 
     @Tolerate
     public Client() {
@@ -35,7 +32,7 @@ public class Client {
     }
 
     @Builder
-    public Client(Long id, String name, String cpf, List<Address> address) {
+    public Client(Long id, String name, String cpf, Address address) {
         this.id = id;
         this.name = name;
         this.cpf = cpf;

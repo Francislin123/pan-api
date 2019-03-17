@@ -13,4 +13,6 @@ public interface ClientService {
     String searchStates();
 
     String searchCounties(Integer counties);
+
+    Client updateClientAddress(Client client, String cep);
 }

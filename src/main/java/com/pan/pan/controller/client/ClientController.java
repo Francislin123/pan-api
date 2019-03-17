@@ -11,16 +11,13 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Api
 @RestController
@@ -46,7 +43,13 @@ public class ClientController {
                 .id(client.getId())
                 .cpf(client.getCpf())
                 .name(client.getName())
-                .address(client.getAddress().stream().map(Address::getCep).collect(Collectors.toList()))
+                .address(Address.builder()
+                        .cep(client.getAddress().getCep())
+                        .logradouro(client.getAddress().getLogradouro())
+                        .localidade(client.getAddress().getLocalidade())
+                        .bairro(client.getAddress().getBairro())
+                        .uf(client.getAddress().getUf())
+                        .build())
                 .build();
 
         if (client == null) {
@@ -114,5 +117,24 @@ public class ClientController {
         }
 
         return ResponseEntity.ok().body(counties);
+    }
+
+    @ApiOperation(value = "Update client address", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful client update", response = ResponseEntity.class),
+            @ApiResponse(code = 404, message = "client not found"),
+            @ApiResponse(code = 500, message = "Unhandled error")})
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateClientAddress(
+            @Valid @RequestBody ClientRequest clientRequest) {
+
+        Client newClient = Client.builder()
+                .name(clientRequest.getName())
+                .cpf(clientRequest.getCpf())
+                .build();
+
+        clientService.updateClientAddress(newClient, clientRequest.getCep());
+
+        return ResponseEntity.ok().build();
     }
 }

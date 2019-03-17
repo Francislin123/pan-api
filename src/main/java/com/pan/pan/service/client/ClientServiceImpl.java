@@ -1,6 +1,8 @@
 package com.pan.pan.service.client;
 
 import com.pan.pan.exceptions.UserException;
+import com.pan.pan.repository.address.AddressRepository;
+import com.pan.pan.repository.address.model.Address;
 import com.pan.pan.repository.client.ClientRepository;
 import com.pan.pan.repository.client.model.Client;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -19,6 +22,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
     @Override
     public Client searchByCpf(String cpf) {
@@ -115,7 +121,46 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public Client updateClientAddress(Client client, String cep) {
+
+        Client findClient = findClientByCpf(client.getCpf());
+
+        Address findAddressByCep = findAddress(cep, findClient);
+
+        Client newClient = Client.builder()
+                .id(findClient.getId())
+                .name(client.getName())
+                .cpf(client.getCpf())
+                .address(findAddressByCep).build();
+
+        Client saveClient = clientRepository.save(newClient);
+
+        return saveClient;
+    }
+
+    private Address findAddress(String cep, Client client) {
+
+        String addreesJson = searchCep(cep);
+
+        Address address = addressRepository.findByCep(client.getAddress().getCep()).orElseThrow(() ->
+                new UserException(String.format("Address is not found for cep='%s' ", cep)));
+
+        Address updateAddress = Address.builder()
+                .id(address.getId())
+                .cep(addreesJson.substring(9,18))
+                .logradouro(addreesJson.substring(35,56))
+                .bairro(addreesJson.substring(100,117))
+                .localidade(addreesJson.substring(134,143))
+                .uf(addreesJson.substring(152,154))
+                .build();
+
+        Address addressNow = addressRepository.save(updateAddress);
+
+        return addressNow;
+    }
+
+    @Override
     public Client findClientByCpf(String cpf) {
-        return clientRepository.findByCpf(cpf).orElseThrow(() -> new UserException(String.format("Client is not found for cpf='%s", cpf)));
+        return clientRepository.findByCpf(cpf).orElseThrow(() -> new UserException(String.format("Client is not found for cpf='%s' ", cpf)));
     }
 }
